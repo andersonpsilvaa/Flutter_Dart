@@ -1,32 +1,46 @@
 class Carro {
   final int velocidadeMaxima;
-  int velociadadeAtual = 0;
+  // Com "_" o atributo não pode ser acessado por outra classe, ficando privado.
+  int _velociadadeAtual = 0;
 
   Carro([this.velocidadeMaxima = 20]);
 
   int acelerar() {
-    if (velociadadeAtual + 5 >= velocidadeMaxima) {
-      velociadadeAtual = velocidadeMaxima;
+    if (_velociadadeAtual + 5 >= velocidadeMaxima) {
+      _velociadadeAtual = velocidadeMaxima;
     } else {
-      velociadadeAtual += 5;
+      _velociadadeAtual += 5;
     }
-    return velociadadeAtual;
+    return _velociadadeAtual;
+  }
+
+  // Permitir a leitura do método em outra classe
+  int get velociadadeAtual {
+    return this._velociadadeAtual;
   }
 
   int frear() {
-    if (velociadadeAtual - 5 <= 0) {
-      velociadadeAtual = 0;
+    if (_velociadadeAtual - 5 <= 0) {
+      _velociadadeAtual = 0;
     } else {
-      velociadadeAtual -= 5;
+      _velociadadeAtual -= 5;
     }
-    return velociadadeAtual;
+    return _velociadadeAtual;
+  }
+
+  // Permitir a alteração por outra classe
+  void set velocidadeAtual(int novaVelocidade) {
+    bool deltaValido = (_velociadadeAtual - novaVelocidade).abs() <= 5;
+    if (deltaValido && novaVelocidade >= 0) {
+      this._velociadadeAtual = novaVelocidade;
+    }
   }
 
   bool estaNoLimite() {
-    return velociadadeAtual == velocidadeMaxima;
+    return _velociadadeAtual == velocidadeMaxima;
   }
 
   bool estaParado() {
-    return velociadadeAtual == 0;
+    return _velociadadeAtual == 0;
   }
 }
