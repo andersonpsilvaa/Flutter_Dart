@@ -64,7 +64,7 @@ class TransactionList extends StatelessWidget {
                           ),
                           Text(
                             DateFormat('d MMM y').format(tr.date),
-                            style: Theme.of(context).textTheme.title,
+                            //style: Theme.of(context).textTheme.title,
                           ),
                         ],
                       )
