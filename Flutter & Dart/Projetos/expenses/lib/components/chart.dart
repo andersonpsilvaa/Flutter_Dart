@@ -30,6 +30,12 @@ class Chart extends StatelessWidget {
         'day': DateFormat.E().format(weekDay)[0],
         'value': totalSum,
       };
+    }).reversed.toList();
+  }
+
+  double get _weekTotalValue {
+    return groupedTransations.fold(0.0, (sum, tr) {
+      return sum + tr['value'];
     });
   }
 
@@ -37,15 +43,24 @@ class Chart extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 6,
+      color: Colors.purple[50],
       margin: EdgeInsets.all(20),
-      child: Row(
-        children: groupedTransations.map((tr) {
-          return ChartBar(
-            label: tr['day'],
-            value: tr['value'],
-            percentage: 0.50,
-          );
-        }).toList(),
+      child: Padding(
+        padding: const EdgeInsets.all(5.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: groupedTransations.map((tr) {
+            return Flexible(
+                fit: FlexFit.tight,
+                child: ChartBar(
+                  label: tr['day'],
+                  value: tr['value'],
+                  percentage: _weekTotalValue == 0
+                      ? 0
+                      : (tr['value'] as double) / _weekTotalValue,
+                ));
+          }).toList(),
+        ),
       ),
     );
   }
