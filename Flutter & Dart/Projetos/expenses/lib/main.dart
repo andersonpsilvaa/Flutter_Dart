@@ -17,7 +17,7 @@ class ExpensesApp extends StatelessWidget {
         accentColor: Colors.amber,
         fontFamily: 'Quicksand',
         textTheme: ThemeData.light().textTheme.copyWith(
-              title: TextStyle(
+              headline6: TextStyle(
                 fontFamily: 'OpenSans',
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -29,7 +29,7 @@ class ExpensesApp extends StatelessWidget {
             ),
         appBarTheme: AppBarTheme(
             textTheme: ThemeData.light().textTheme.copyWith(
-                    title: TextStyle(
+                    headline6: TextStyle(
                   fontFamily: 'OpenSans-Bold',
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
@@ -48,9 +48,33 @@ class _MyHomePageState extends State<MyHomePage> {
   final List<Transaction> _transactions = [
     Transaction(
       id: 't0',
-      title: 'Conta',
+      title: 'Conta t0',
       value: 400,
       date: DateTime.now().subtract(Duration(days: 6)),
+    ),
+    Transaction(
+      id: 't1',
+      title: 'Conta t1',
+      value: 500,
+      date: DateTime.now().subtract(Duration(days: 5)),
+    ),
+    Transaction(
+      id: 't2',
+      title: 'Conta t2',
+      value: 600,
+      date: DateTime.now().subtract(Duration(days: 4)),
+    ),
+    Transaction(
+      id: 't3',
+      title: 'Conta t3',
+      value: 700,
+      date: DateTime.now().subtract(Duration(days: 3)),
+    ),
+    Transaction(
+      id: 't4',
+      title: 'Conta t4',
+      value: 800,
+      date: DateTime.now().subtract(Duration(days: 2)),
     ),
   ];
 
@@ -94,25 +118,38 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        //backgroundColor: Colors.green,
-        title: Text(
-          'Despessas Pessoais',
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.add),
-            onPressed: () => _openTransactionFormModal(context),
-          )
-        ],
+    final appBar = AppBar(
+      //backgroundColor: Colors.green,
+      title: Text(
+        'Despesas Pessoais',
+        //style: TextStyle(fontSize: 20 * MediaQuery.of(context).textScaleFactor,),
       ),
+      actions: [
+        IconButton(
+          icon: Icon(Icons.add),
+          onPressed: () => _openTransactionFormModal(context),
+        )
+      ],
+    );
+
+    final availableHeight = MediaQuery.of(context).size.height -
+        appBar.preferredSize.height -
+        MediaQuery.of(context).padding.top;
+
+    return Scaffold(
+      appBar: appBar,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Chart(_recentTransations),
-            TransactionList(_transactions, _removeTransaction),
+            Container(
+              child: Chart(_recentTransations),
+              height: availableHeight * 0.3,
+            ),
+            Container(
+              child: TransactionList(_transactions, _removeTransaction),
+              height: availableHeight * 0.7,
+            ),
           ],
         ),
       ),
