@@ -46,7 +46,27 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
+  // Classe que controla a utilização dos componentes
+  @override
+  void initSate() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  // Classe que mostra o estado da Aplicação
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    print(state);
+  }
+
+  // Classe retira o controle dos componentes
+  @override
+  void dispose() {
+    super.dispose();
+    WidgetsBinding.instance.removeObserver(this);
+  }
+
   final List<Transaction> _transactions = [
     Transaction(
       id: 't0',
@@ -75,7 +95,7 @@ class _MyHomePageState extends State<MyHomePage> {
     Transaction(
       id: 't4',
       title: 'Conta t4',
-      value: 800,
+      value: 1800,
       date: DateTime.now().subtract(Duration(days: 2)),
     ),
   ];
