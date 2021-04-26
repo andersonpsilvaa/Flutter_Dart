@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'categories_screens.dart';
-import 'favorite_screen.dart';
 
 class TabsScreen extends StatelessWidget {
   @override
@@ -29,7 +28,7 @@ class TabsScreen extends StatelessWidget {
         body: TabBarView(
           children: [
             CategoriesScreen(),
-            FavoriteScreen(),
+            //FavoriteScreen(),
           ],
         ),
       ),
