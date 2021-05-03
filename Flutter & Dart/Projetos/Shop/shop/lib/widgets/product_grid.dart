@@ -9,7 +9,7 @@ class ProductGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     final List<Product> loadedProducts = Provider.of<Products>(context).items;
     return Container(
-      color: Theme.of(context).backgroundColor,
+      //color: Theme.of(context).backgroundColor,
       child: GridView.builder(
         padding: const EdgeInsets.all(10),
         itemCount: loadedProducts.length,
