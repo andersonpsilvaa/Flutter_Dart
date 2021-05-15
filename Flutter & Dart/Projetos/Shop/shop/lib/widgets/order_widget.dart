@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:shop/providers/orders.dart';
+
+import '../providers/orders.dart';
 
 class OrderWidget extends StatefulWidget {
   final Order order;
+
   OrderWidget(this.order);
 
   @override
@@ -18,7 +20,7 @@ class _OrderWidgetState extends State<OrderWidget> {
     return Card(
       margin: EdgeInsets.all(10),
       child: Column(
-        children: [
+        children: <Widget>[
           ListTile(
             title: Text('R\$ ${widget.order.total.toStringAsFixed(2)}'),
             subtitle: Text(
@@ -39,20 +41,26 @@ class _OrderWidgetState extends State<OrderWidget> {
                 horizontal: 15,
                 vertical: 4,
               ),
-              height: (widget.order.products.length * 30.0),
+              height: (widget.order.products.length * 25.0) + 10,
               child: ListView(
                 children: widget.order.products.map((product) {
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(product.title,
-                          style: TextStyle(
-                            fontSize: 18,
-                          )),
-                      Text('${product.quantity}x R\$${product.price}',
-                          style: TextStyle(
-                            fontSize: 18,
-                          )),
+                    children: <Widget>[
+                      Text(
+                        product.title,
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        '${product.quantity} x R\$ ${product.price}',
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.grey,
+                        ),
+                      ),
                     ],
                   );
                 }).toList(),

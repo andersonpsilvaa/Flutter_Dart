@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shop/providers/cart.dart';
+import '../providers/cart.dart';
 
 class CartItemWidget extends StatelessWidget {
   final CartItem cartItem;
@@ -12,15 +12,18 @@ class CartItemWidget extends StatelessWidget {
     return Dismissible(
       key: ValueKey(cartItem.id),
       background: Container(
-        color: Theme.of(context).primaryColorDark,
+        color: Theme.of(context).errorColor,
         child: Icon(
           Icons.delete,
           color: Colors.white,
           size: 40,
         ),
         alignment: Alignment.centerRight,
-        padding: EdgeInsets.only(right: 10),
-        margin: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+        padding: EdgeInsets.only(right: 20),
+        margin: EdgeInsets.symmetric(
+          horizontal: 15,
+          vertical: 4,
+        ),
       ),
       direction: DismissDirection.endToStart,
       confirmDismiss: (_) {
@@ -29,17 +32,17 @@ class CartItemWidget extends StatelessWidget {
             builder: (ctx) => AlertDialog(
                   title: Text('Tem certeza?'),
                   content: Text('Quer remover o item do carrinho?'),
-                  actions: [
+                  actions: <Widget>[
                     FlatButton(
                       child: Text('Não'),
                       onPressed: () {
-                        Navigator.of(context).pop(false);
+                        Navigator.of(ctx).pop(false);
                       },
                     ),
                     FlatButton(
                       child: Text('Sim'),
                       onPressed: () {
-                        Navigator.of(context).pop(true);
+                        Navigator.of(ctx).pop(true);
                       },
                     ),
                   ],
@@ -50,24 +53,23 @@ class CartItemWidget extends StatelessWidget {
             .removeItem(cartItem.productId);
       },
       child: Card(
-        margin: EdgeInsets.symmetric(horizontal: 15, vertical: 4),
+        margin: EdgeInsets.symmetric(
+          horizontal: 15,
+          vertical: 4,
+        ),
         child: Padding(
-          padding: EdgeInsets.all(5),
+          padding: EdgeInsets.all(8),
           child: ListTile(
             leading: CircleAvatar(
               child: Padding(
-                padding: EdgeInsets.all(2),
+                padding: EdgeInsets.all(5),
                 child: FittedBox(
-                  child: Text(
-                    '${cartItem.price}',
-                  ),
+                  child: Text('${cartItem.price}'),
                 ),
               ),
             ),
             title: Text(cartItem.title),
-            subtitle: Text(
-              'Total: R\$ ${cartItem.price * cartItem.quantity}',
-            ),
+            subtitle: Text('Total: R\$ ${cartItem.price * cartItem.quantity}'),
             trailing: Text('${cartItem.quantity}x'),
           ),
         ),

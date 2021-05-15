@@ -1,33 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:shop/providers/product.dart';
-import 'package:shop/providers/products.dart';
+
+import '../providers/product.dart';
+import '../providers/products.dart';
 
 class ProductFormScreen extends StatefulWidget {
   @override
-  _ProductFormScreen createState() => _ProductFormScreen();
+  _ProductFormScreenState createState() => _ProductFormScreenState();
 }
 
-class _ProductFormScreen extends State<ProductFormScreen> {
+class _ProductFormScreenState extends State<ProductFormScreen> {
   final _priceFocusNode = FocusNode();
   final _descriptionFocusNode = FocusNode();
   final _imageUrlFocusNode = FocusNode();
   final _imageUrlController = TextEditingController();
   final _form = GlobalKey<FormState>();
   final _formData = Map<String, Object>();
-  bool isLoading = false;
+  bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
     _imageUrlFocusNode.addListener(_updateImage);
-  }
-
-  void _updateImage() {
-    if (isValidImageUrl(_imageUrlController.text)) {
-      setState(() {});
-    }
   }
 
   @override
@@ -40,8 +34,8 @@ class _ProductFormScreen extends State<ProductFormScreen> {
       if (product != null) {
         _formData['id'] = product.id;
         _formData['title'] = product.title;
-        _formData['price'] = product.price;
         _formData['description'] = product.description;
+        _formData['price'] = product.price;
         _formData['imageUrl'] = product.imageUrl;
 
         _imageUrlController.text = _formData['imageUrl'];
@@ -51,52 +45,20 @@ class _ProductFormScreen extends State<ProductFormScreen> {
     }
   }
 
-  bool isValidImageUrl(String url) {
-    bool isValidProtocol = url.toLowerCase().startsWith('http://') ||
-        url.toLowerCase().startsWith('https://');
-    bool endsWithImage = url.toLowerCase().endsWith('.png') ||
-        url.toLowerCase().endsWith('.jpg') ||
-        url.toLowerCase().endsWith('.jpeg');
-
-    return (isValidProtocol && endsWithImage);
+  void _updateImage() {
+    if (isValidImageUrl(_imageUrlController.text)) {
+      setState(() {});
+    }
   }
 
-  void _saveForm() {
-    bool isValid = _form.currentState.validate();
-    if (!isValid) {
-      return;
-    }
-
-    _form.currentState.save();
-
-    final newProduct = Product(
-      id: _formData['id'],
-      title: _formData['title'],
-      price: _formData['price'],
-      description: _formData['description'],
-      imageUrl: _formData['imageUrl'],
-    );
-
-    setState(() {
-      isLoading = true;
-    });
-
-    final products = Provider.of<Products>(context, listen: false);
-
-    if (_formData['id'] == null) {
-      products.addProduct(newProduct).then((_) {
-        setState(() {
-          isLoading = false;
-        });
-        Navigator.of(context).pop();
-      });
-    } else {
-      products.updateProduct(newProduct);
-      setState(() {
-        isLoading = false;
-      });
-      Navigator.of(context).pop();
-    }
+  bool isValidImageUrl(String url) {
+    bool startWithHttp = url.toLowerCase().startsWith('http://');
+    bool startWithHttps = url.toLowerCase().startsWith('https://');
+    bool endsWithPng = url.toLowerCase().endsWith('.png');
+    bool endsWithJpg = url.toLowerCase().endsWith('.jpg');
+    bool endsWithJpeg = url.toLowerCase().endsWith('.jpeg');
+    return (startWithHttp || startWithHttps) &&
+        (endsWithPng || endsWithJpg || endsWithJpeg);
   }
 
   @override
@@ -108,12 +70,63 @@ class _ProductFormScreen extends State<ProductFormScreen> {
     _imageUrlFocusNode.dispose();
   }
 
+  Future<void> _saveForm() async {
+    var isValid = _form.currentState.validate();
+
+    if (!isValid) {
+      return;
+    }
+
+    _form.currentState.save();
+
+    final product = Product(
+      id: _formData['id'],
+      title: _formData['title'],
+      price: _formData['price'],
+      description: _formData['description'],
+      imageUrl: _formData['imageUrl'],
+    );
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    final products = Provider.of<Products>(context, listen: false);
+
+    try {
+      if (_formData['id'] == null) {
+        await products.addProduct(product);
+      } else {
+        await products.updateProduct(product);
+      }
+      Navigator.of(context).pop();
+    } catch (error) {
+      await showDialog<Null>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Text('Ocorreu um erro!'),
+          content: Text('Ocorreu um erro pra salvar o produto!'),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Fechar'),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ],
+        ),
+      );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Formulário Produto'),
-        actions: [
+        actions: <Widget>[
           IconButton(
             icon: Icon(Icons.save),
             onPressed: () {
@@ -122,7 +135,7 @@ class _ProductFormScreen extends State<ProductFormScreen> {
           )
         ],
       ),
-      body: isLoading
+      body: _isLoading
           ? Center(
               child: CircularProgressIndicator(),
             )
@@ -131,22 +144,24 @@ class _ProductFormScreen extends State<ProductFormScreen> {
               child: Form(
                 key: _form,
                 child: ListView(
-                  children: [
+                  children: <Widget>[
                     TextFormField(
                       initialValue: _formData['title'],
                       decoration: InputDecoration(labelText: 'Título'),
                       textInputAction: TextInputAction.next,
-                      onChanged: (_) {
-                        //FocusScope.of(context).requestFocus(_priceFocusNode);
+                      onFieldSubmitted: (_) {
+                        FocusScope.of(context).requestFocus(_priceFocusNode);
                       },
                       onSaved: (value) => _formData['title'] = value,
                       validator: (value) {
                         bool isEmpty = value.trim().isEmpty;
-                        if (isEmpty) {
-                          return 'Informe um título válido!';
-                        } else {
-                          return null;
+                        bool isInvalid = value.trim().length < 3;
+
+                        if (isEmpty || isInvalid) {
+                          return 'Informe um Título válido com no mínimo 3 caracteres!';
                         }
+
+                        return null;
                       },
                     ),
                     TextFormField(
@@ -154,8 +169,9 @@ class _ProductFormScreen extends State<ProductFormScreen> {
                       decoration: InputDecoration(labelText: 'Preço'),
                       textInputAction: TextInputAction.next,
                       focusNode: _priceFocusNode,
-                      keyboardType:
-                          TextInputType.numberWithOptions(decimal: true),
+                      keyboardType: TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
                       onFieldSubmitted: (_) {
                         FocusScope.of(context)
                             .requestFocus(_descriptionFocusNode);
@@ -165,12 +181,13 @@ class _ProductFormScreen extends State<ProductFormScreen> {
                       validator: (value) {
                         bool isEmpty = value.trim().isEmpty;
                         var newPrice = double.tryParse(value);
-                        bool isValid = newPrice == null || newPrice <= 0;
-                        if (isEmpty || isValid) {
-                          return 'Informe um valor válido!';
-                        } else {
-                          return null;
+                        bool isInvalid = newPrice == null || newPrice <= 0;
+
+                        if (isEmpty || isInvalid) {
+                          return 'Informe um Preço válido!';
                         }
+
+                        return null;
                       },
                     ),
                     TextFormField(
@@ -182,16 +199,18 @@ class _ProductFormScreen extends State<ProductFormScreen> {
                       onSaved: (value) => _formData['description'] = value,
                       validator: (value) {
                         bool isEmpty = value.trim().isEmpty;
-                        if (isEmpty) {
-                          return 'Informe uma descrição para o produto!';
-                        } else {
-                          return null;
+                        bool isInvalid = value.trim().length < 10;
+
+                        if (isEmpty || isInvalid) {
+                          return 'Informe uma Descrição válida com no mínimo 10 caracteres!';
                         }
+
+                        return null;
                       },
                     ),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
+                      children: <Widget>[
                         Expanded(
                           child: TextFormField(
                             decoration:
@@ -200,25 +219,29 @@ class _ProductFormScreen extends State<ProductFormScreen> {
                             textInputAction: TextInputAction.done,
                             focusNode: _imageUrlFocusNode,
                             controller: _imageUrlController,
-                            onSaved: (value) => _formData['imageUrl'] = value,
                             onFieldSubmitted: (_) {
                               _saveForm();
                             },
+                            onSaved: (value) => _formData['imageUrl'] = value,
                             validator: (value) {
                               bool isEmpty = value.trim().isEmpty;
-                              bool isValid = !isValidImageUrl(value);
-                              if (isEmpty || isValid) {
+                              bool isInvalid = !isValidImageUrl(value);
+
+                              if (isEmpty || isInvalid) {
                                 return 'Informe uma URL válida!';
-                              } else {
-                                return null;
                               }
+
+                              return null;
                             },
                           ),
                         ),
                         Container(
                           height: 100,
                           width: 100,
-                          margin: EdgeInsets.only(top: 8, left: 10),
+                          margin: EdgeInsets.only(
+                            top: 8,
+                            left: 10,
+                          ),
                           decoration: BoxDecoration(
                             border: Border.all(
                               color: Colors.grey,

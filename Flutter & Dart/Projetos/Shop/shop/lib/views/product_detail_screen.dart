@@ -12,9 +12,8 @@ class ProductDetailScreen extends StatelessWidget {
         title: Text(product.title),
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.only(top: 5),
         child: Column(
-          children: [
+          children: <Widget>[
             Container(
               height: 300,
               width: double.infinity,
@@ -23,31 +22,21 @@ class ProductDetailScreen extends StatelessWidget {
                 fit: BoxFit.cover,
               ),
             ),
-            SizedBox(
-              height: 10,
-            ),
+            SizedBox(height: 10),
             Text(
-              'R\$${product.price}',
+              'R\$ ${product.price}',
               style: TextStyle(
                 color: Colors.grey,
                 fontSize: 20,
-                fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(
-              height: 10,
-            ),
+            SizedBox(height: 10),
             Container(
               padding: EdgeInsets.symmetric(horizontal: 10),
               width: double.infinity,
               child: Text(
                 product.description,
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
               ),
             ),
           ],
