@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:provider/provider.dart';
+import 'package:shop/providers/auth.dart';
 
 enum AuthMode { Signup, Login }
 
@@ -9,6 +11,10 @@ class AuthCard extends StatefulWidget {
 }
 
 class _AuthCardState extends State<AuthCard> {
+  GlobalKey<FormState> _form = GlobalKey();
+
+  bool _isLoading = false;
+
   AuthMode _authMode = AuthMode.Login;
 
   final _passwordController = TextEditingController();
@@ -18,7 +24,41 @@ class _AuthCardState extends State<AuthCard> {
     'password': '',
   };
 
-  void _submit() {}
+  Future<void> _submit() async {
+    if (!_form.currentState.validate()) {
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    _form.currentState.save();
+
+    Auth auth = Provider.of(context, listen: false);
+
+    if (_authMode == AuthMode.Login) {
+      // Login
+    } else {
+      await auth.signup(_authData['email'], _authData['password']);
+    }
+
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  void _switchAuthMode() {
+    if (_authMode == AuthMode.Login) {
+      setState(() {
+        _authMode = AuthMode.Signup;
+      });
+    } else {
+      setState(() {
+        _authMode = AuthMode.Login;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,10 +70,11 @@ class _AuthCardState extends State<AuthCard> {
         borderRadius: BorderRadius.circular(10),
       ),
       child: Container(
-        height: 220,
+        height: _authMode == AuthMode.Login ? 290 : 350,
         width: deviceSize.width * 0.75,
         padding: EdgeInsets.all(16),
         child: Form(
+          key: _form,
           child: Column(
             children: [
               TextFormField(
@@ -53,7 +94,7 @@ class _AuthCardState extends State<AuthCard> {
                 decoration: InputDecoration(labelText: 'Senha'),
                 obscureText: true,
                 validator: (value) {
-                  if (value.isEmpty || value.length < 5) {
+                  if (value.isEmpty || value.length < 6) {
                     return "Informe uma senha válida!";
                   }
                   return null;
@@ -73,20 +114,28 @@ class _AuthCardState extends State<AuthCard> {
                           return null;
                         }
                       : null,
-                  onSaved: (value) => _authData['password'] = value,
-                  controller: _passwordController,
                 ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
+              Spacer(),
+              if (_isLoading)
+                CircularProgressIndicator()
+              else
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                   ),
-                  padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                  child: Text(
+                    _authMode == AuthMode.Login ? 'ENTRAR' : 'REGISTRAR',
+                  ),
+                  onPressed: _submit,
                 ),
-                child:
-                    Text(_authData == AuthMode.Login ? 'ENTRAR' : 'REGISTRAR'),
-                onPressed: _submit,
+              TextButton(
+                onPressed: _switchAuthMode,
+                child: Text(
+                  'ALTERAR P/ ${_authMode == AuthMode.Login ? 'REGISTRAR' : 'LOGIN'}',
+                ),
               ),
             ],
           ),
