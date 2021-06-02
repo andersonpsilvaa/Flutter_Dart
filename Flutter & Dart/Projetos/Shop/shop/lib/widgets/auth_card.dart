@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
+import 'package:shop/exceptions/auth_exception.dart';
 import 'package:shop/providers/auth.dart';
 
 enum AuthMode { Signup, Login }
@@ -24,6 +25,24 @@ class _AuthCardState extends State<AuthCard> {
     'password': '',
   };
 
+  void _showErrorDialog(String msg) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('Ocorreu um erro!'),
+        content: Text(msg),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text('Fechar!'),
+          ),
+        ],
+      ),
+    );
+  }
+
   Future<void> _submit() async {
     if (!_form.currentState.validate()) {
       return;
@@ -37,16 +56,22 @@ class _AuthCardState extends State<AuthCard> {
 
     Auth auth = Provider.of(context, listen: false);
 
-    if (_authMode == AuthMode.Login) {
-      await auth.login(
-        _authData['email'],
-        _authData['password'],
-      );
-    } else {
-      await auth.signup(
-        _authData['email'],
-        _authData['password'],
-      );
+    try {
+      if (_authMode == AuthMode.Login) {
+        await auth.login(
+          _authData['email'],
+          _authData['password'],
+        );
+      } else {
+        await auth.signup(
+          _authData['email'],
+          _authData['password'],
+        );
+      }
+    } on AuthException catch (error) {
+      _showErrorDialog(error.toString());
+    } catch (error) {
+      _showErrorDialog("Erro Inesperado!");
     }
 
     setState(() {
@@ -76,7 +101,7 @@ class _AuthCardState extends State<AuthCard> {
         borderRadius: BorderRadius.circular(10),
       ),
       child: Container(
-        height: _authMode == AuthMode.Login ? 290 : 350,
+        height: _authMode == AuthMode.Login ? 290 : 380,
         width: deviceSize.width * 0.75,
         padding: EdgeInsets.all(16),
         child: Form(
@@ -100,7 +125,7 @@ class _AuthCardState extends State<AuthCard> {
                 decoration: InputDecoration(labelText: 'Senha'),
                 obscureText: true,
                 validator: (value) {
-                  if (value.isEmpty || value.length < 6) {
+                  if (value.isEmpty) {
                     return "Informe uma senha válida!";
                   }
                   return null;
