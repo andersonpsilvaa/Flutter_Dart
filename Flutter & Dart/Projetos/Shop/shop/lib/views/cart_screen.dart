@@ -77,8 +77,6 @@ class _OrderButtonState extends State<OrderButton> {
   Widget build(BuildContext context) {
     return TextButton(
       child: _isLoading ? CircularProgressIndicator() : Text('COMPRAR'),
-      style:
-          TextButton.styleFrom(backgroundColor: Theme.of(context).primaryColor),
       onPressed: widget.cart.totalAmount == 0
           ? null
           : () async {
