@@ -59,9 +59,7 @@ class _ImageInputState extends State<ImageInput> {
                   'Nenhuma Imagem',
                 ),
         ),
-        SizedBox(
-          width: 10,
-        ),
+        SizedBox(width: 10),
         Expanded(
           child: TextButton.icon(
             icon: Icon(Icons.camera),

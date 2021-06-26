@@ -23,8 +23,10 @@ class _PlaceFormScreenState extends State<PlaceFormScreen> {
       return;
     }
 
-    Provider.of<GreatPlaces>(context, listen: false)
-        .addPlace(_titleController.text, _pickedImage);
+    Provider.of<GreatPlaces>(context, listen: false).addPlace(
+      _titleController.text,
+      _pickedImage,
+    );
 
     Navigator.of(context).pop();
   }
