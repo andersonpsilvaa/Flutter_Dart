@@ -21,12 +21,13 @@ class GreatPlaces with ChangeNotifier {
 
   void addPlace(String title, File image) {
     final newPlace = Place(
-        id: Random().nextDouble().toString(),
-        title: title,
-        image: image,
-        location: null);
+      id: Random().nextDouble().toString(),
+      title: title,
+      image: image,
+      location: null,
+    );
 
-    items.add(newPlace);
+    _items.add(newPlace);
     notifyListeners();
   }
 }

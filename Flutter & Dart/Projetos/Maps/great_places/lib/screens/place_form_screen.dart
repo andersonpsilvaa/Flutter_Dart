@@ -60,20 +60,21 @@ class _PlaceFormScreenState extends State<PlaceFormScreen> {
             ),
           ),
           ElevatedButton.icon(
-            // child: Text(
-            //   'Adicionar',
-            //   style: TextStyle(
-            //     color: Colors.black,
-            //   ),
-            // ),
-            icon: Icon(Icons.add),
-            label: Text('Adicionar'),
+            icon: Icon(
+              Icons.add,
+              color: Colors.black,
+            ),
+            label: Text(
+              'Adicionar',
+              style: TextStyle(
+                color: Colors.black,
+              ),
+            ),
             style: ElevatedButton.styleFrom(
-              primary: Colors.red,
-              shadowColor: Colors.red,
+              primary: Colors.amber,
+              shadowColor: Colors.amber,
               elevation: 0,
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              // textStyle: TextStyle(color: Colors.black),
             ),
             onPressed: _submitForm,
           ),
