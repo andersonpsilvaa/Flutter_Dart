@@ -2,6 +2,8 @@ include ':app'
 
 def localPropertiesFile = new File(rootProject.projectDir, "local.properties")
 def properties = new Properties()
+def flutterProjectRoot = rootProject.projectDir.parentFile.toPath()
+def pluginsFile = new File(flutterProjectRoot.toFile(), '.flutter-plugins')
 
 assert localPropertiesFile.exists()
 localPropertiesFile.withReader("UTF-8") { reader -> properties.load(reader) }
