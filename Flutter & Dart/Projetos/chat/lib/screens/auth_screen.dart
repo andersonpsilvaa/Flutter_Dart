@@ -72,7 +72,7 @@ class _AuthScreenState extends State<AuthScreen> {
       _scaffoldKey.currentState.showSnackBar(
         SnackBar(
           content: Text(msg),
-          backgroundColor: Theme.of(context).errorColor,
+          backgroundColor: Theme.of(context).accentColor,
         ),
       );
     } catch (err) {
