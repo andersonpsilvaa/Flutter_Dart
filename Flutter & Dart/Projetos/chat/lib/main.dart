@@ -1,5 +1,6 @@
 import 'package:chat/screens/auth_screen.dart';
 import 'package:chat/screens/chat_screen.dart';
+import 'package:chat/screens/splash_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -36,20 +37,22 @@ class MyApp extends StatelessWidget {
             ),
             visualDensity: VisualDensity.adaptivePlatformDensity,
           ),
-          home: StreamBuilder(
-            // ATENÇÃO: Nova versão!
-            stream: FirebaseAuth.instance.authStateChanges(),
+          home: appSnapshot.connectionState == ConnectionState.waiting
+              ? SplashScreen()
+              : StreamBuilder(
+                  // ATENÇÃO: Nova versão!
+                  stream: FirebaseAuth.instance.authStateChanges(),
 
-            // ATENÇÃO: Versão antiga!
-            // stream: FirebaseAuth.instance.onAuthStateChanged,
-            builder: (ctx, userSnapshot) {
-              if (userSnapshot.hasData) {
-                return ChatScreen();
-              } else {
-                return AuthScreen();
-              }
-            },
-          ),
+                  // ATENÇÃO: Versão antiga!
+                  // stream: FirebaseAuth.instance.onAuthStateChanged,
+                  builder: (ctx, userSnapshot) {
+                    if (userSnapshot.hasData) {
+                      return ChatScreen();
+                    } else {
+                      return AuthScreen();
+                    }
+                  },
+                ),
         );
       },
     );

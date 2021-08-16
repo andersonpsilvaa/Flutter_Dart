@@ -13,6 +13,23 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
     final fbm = FirebaseMessaging();
+    // fbm.configure(
+    //   onMessage: (msg) {
+    //     print('onMessage...');
+    //     print(msg);
+    //     return;
+    //   },
+    //   onResume: (msg) {
+    //     print('onResume...');
+    //     print(msg);
+    //     return;
+    //   },
+    //   onLaunch: (msg) {
+    //     print('onLaunch...');
+    //     print(msg);
+    //     return;
+    //   },
+    // );
     fbm.requestNotificationPermissions();
 
     super.initState();
