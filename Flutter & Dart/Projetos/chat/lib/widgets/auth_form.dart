@@ -55,6 +55,9 @@ class _AuthFormState extends State<AuthForm> {
                   if (_authData.isSignup) UserImagePicker(_handlePickedImage),
                   if (_authData.isSignup)
                     TextFormField(
+                      autocorrect: false,
+                      textCapitalization: TextCapitalization.words,
+                      enableSuggestions: false,
                       key: ValueKey('name'),
                       decoration: InputDecoration(
                         labelText: 'Nome',
@@ -69,6 +72,8 @@ class _AuthFormState extends State<AuthForm> {
                       },
                     ),
                   TextFormField(
+                    autocorrect: false,
+                    textCapitalization: TextCapitalization.none,
                     key: ValueKey('email'),
                     decoration: InputDecoration(
                       labelText: 'E-mail',
@@ -82,6 +87,9 @@ class _AuthFormState extends State<AuthForm> {
                     },
                   ),
                   TextFormField(
+                    autocorrect: false,
+                    textCapitalization: TextCapitalization.words,
+                    enableSuggestions: false,
                     key: ValueKey('password'),
                     obscureText: true,
                     decoration: InputDecoration(
