@@ -21,22 +21,22 @@ class _CounterPageState extends State<CounterPage> {
       ),
       body: Column(
         children: [
-          Text(provider?.state.value.toString() ?? '0'),
+          Text(provider.state.value.toString() ?? '0'),
           IconButton(
             onPressed: () {
               setState(() {
-                provider?.state.inc();
+                provider.state.inc();
               });
-              print(provider?.state.value);
+              print(provider.state.value);
             },
             icon: Icon(Icons.add),
           ),
           IconButton(
             onPressed: () {
               setState(() {
-                provider?.state.dec();
+                provider.state.dec();
               });
-              print(provider?.state.value);
+              print(provider.state.value);
             },
             icon: Icon(Icons.remove),
           ),

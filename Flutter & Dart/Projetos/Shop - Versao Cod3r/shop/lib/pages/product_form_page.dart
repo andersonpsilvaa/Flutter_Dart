@@ -33,7 +33,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
     super.didChangeDependencies();
 
     if (_formData.isEmpty) {
-      final arg = ModalRoute.of(context)?.settings.arguments;
+      final arg = ModalRoute.of(context).settings.arguments;
 
       if (arg != null) {
         final product = arg as Product;
