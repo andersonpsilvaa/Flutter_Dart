@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class Button extends StatelessWidget {
   static const DARK = Color.fromRGBO(82, 82, 82, 1);
   static const DEFAULT = Color.fromRGBO(112, 112, 112, 1);
@@ -8,27 +9,27 @@ class Button extends StatelessWidget {
   String text = "";
   bool big = false;
   Color color;
-  void Function(String) cb;
+  void Function(String)? cb;
 
   Button({
     this.text = '',
     this.big = false,
     this.color = DEFAULT,
-    this.cb,
+    @required this.cb,
   });
 
   Button.big({
     this.text = '',
     this.big = true,
     this.color = DEFAULT,
-    this.cb,
+    @required this.cb,
   });
 
   Button.operation({
     this.text = '',
     this.big = false,
     this.color = OPERATION,
-    this.cb,
+    @required this.cb,
   });
 
   @override
@@ -39,12 +40,12 @@ class Button extends StatelessWidget {
         child: Text(
           text,
           style: TextStyle(
-            color: Colors.white,
+            color: Colors.yellowAccent,
             fontSize: 32,
             fontWeight: FontWeight.w200,
           ),
         ),
-        onPressed: () => cb(text),
+        onPressed: () => cb!(text),
       ),
     );
   }

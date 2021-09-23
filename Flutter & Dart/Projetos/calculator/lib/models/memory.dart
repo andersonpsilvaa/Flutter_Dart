@@ -3,7 +3,7 @@ class Memory {
 
   final _buffer = [0.0, 0.0];
   int _bufferIndex = 0;
-  String _operation = "";
+  String? _operation = "";
   String _value = '0';
   bool _wipeValue = false;
   String _lastCommand = "";
@@ -13,7 +13,6 @@ class Memory {
       _operation = command;
       return;
     }
-
     if (command == 'AC') {
       _allClear();
     } else if (operations.contains(command)) {
@@ -73,7 +72,7 @@ class Memory {
     _value = '0';
     _buffer.setAll(0, [0.0, 0.0]);
     _bufferIndex = 0;
-    _operation = "";
+    _operation = null;
     _wipeValue = false;
   }
 
